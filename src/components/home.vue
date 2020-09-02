@@ -15,6 +15,7 @@
             <div class="toggle" @click="toggleCollapse">|||</div>
             <!-- 侧边栏菜单 -->
             <el-menu
+               :default-active="activePath"
                router
                :collapse-transition="false"
                :collapse="isCollapse"
@@ -23,7 +24,7 @@
                text-color="#fff"
                active-text-color="#409eff">
                <!-- 一级菜单 -->
-               <el-submenu :index="item.path+''" v-for="item in menulist" :key="item.id">
+               <el-submenu :index="item.id+''" v-for="item in menulist" :key="item.id">
                   <!-- 一级菜单的模板 -->
                   <template slot="title">
                      <!-- 图标 -->
@@ -32,7 +33,7 @@
                      <span>{{item.authName}}</span>
                   </template>
                   <!-- 二级菜单 -->
-                  <el-menu-item :index="'/'+item1.path" v-for="item1 in item.children" :key="item1.id">
+                  <el-menu-item @click="saveNavState('/'+item1.path)" :index="'/'+item1.path" v-for="item1 in item.children" :key="item1.id">
                      <template slot="title">
                         <!-- 图标 -->
                         <i class="el-icon-menu"></i>
@@ -65,7 +66,9 @@ export default {
             '101':'el-icon-s-cooperation',
             '102':'el-icon-s-order',
             '145':'el-icon-s-platform',
-         }
+         },
+         //被激活的链接地址
+         activePath:""
       }
    },
    methods:{
@@ -83,10 +86,16 @@ export default {
       //点击按钮切换菜单的折叠和展开
       toggleCollapse(){
          this.isCollapse=!this.isCollapse
+      },
+      //保存链接的激活状态
+      saveNavState(activePath){
+         window.sessionStorage.setItem("activePath",activePath);
+         this.activePath=activePath;
       }
    },
    created(){
-      this.getMenuList()
+      this.getMenuList();
+      this.activePath=window.sessionStorage.getItem("activePath");
    }
 }
 </script>
